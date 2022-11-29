@@ -1,0 +1,2 @@
+<app-add-birthday (onAddBirthday)="addBirthday($event)"></app-add-birthday>
+<app-birthday-item *ngFor="let birthday of birthdays" [birthday]="birthday" (onDeleteBirthday)="deleteBirthday(birthday)"></app-birthday-item>

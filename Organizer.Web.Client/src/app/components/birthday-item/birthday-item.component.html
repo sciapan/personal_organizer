@@ -1,0 +1,6 @@
+<div class="task">
+    <h3>{{birthday.person}} <fa-icon (click)="onDelete(birthday)" [ngStyle]="{'color':'red'}" [icon]="faTimes"></fa-icon>
+    </h3>
+    <p>{{birthday.dob | date: 'dd/MM/yyyy'}}</p>
+    <p>{{birthday.notes}}</p>
+</div>
