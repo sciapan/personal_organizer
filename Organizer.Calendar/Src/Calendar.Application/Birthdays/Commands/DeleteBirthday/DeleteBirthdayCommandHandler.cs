@@ -32,16 +32,17 @@ namespace Calendar.Application.Birthdays.Commands.DeleteBirthday
         public async Task<BirthdayVm?> Handle(DeleteBirthdayCommand request, CancellationToken cancellationToken)
         {
             var birthday = await _dbContext.Birthdays.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
-            if (birthday != null)
+            if (birthday == null)
             {
-                _dbContext.Birthdays.Remove(birthday);
-
-                await _dbContext.SaveChangesAsync(cancellationToken);
-
-                return birthday.Adapt<BirthdayVm>();
+                return null;
             }
 
-            return null;
+            _dbContext.Birthdays.Remove(birthday);
+
+            await _dbContext.SaveChangesAsync(cancellationToken);
+
+            return birthday.Adapt<BirthdayVm>();
+
         }
 
         #endregion
