@@ -13,26 +13,26 @@ const httpOptions = {
   providedIn: 'root'
 })
 export class BirthdaysService {
-  private apiUrl = 'https://localhost:7212'
+  private apiUrl = 'http://localhost:17500'
 
   constructor(private http: HttpClient) { }
 
   getBirthdays(): Observable<Birthday[]> {
-    return this.http.get<Birthday[]>(`${this.apiUrl}/birthday`);
+    return this.http.get<Birthday[]>(`${this.apiUrl}/birthdays`);
   }
 
   deleteBirthday(birthday: Birthday): Observable<Birthday> {
-    const url = `${this.apiUrl}/birthday/${birthday.id}`;
+    const url = `${this.apiUrl}/birthdays/${birthday.id}`;
     return this.http.delete<Birthday>(url);
   }
 
   updateBirthday(birthday: Birthday): Observable<Object> {
-    const url = `${this.apiUrl}/birthday/${birthday.id}`;
+    const url = `${this.apiUrl}/birthdays/${birthday.id}`;
     return this.http.put(url, birthday, httpOptions);
   }
 
   addBirthday(birthday: Birthday): Observable<Birthday> {
-    const url = `${this.apiUrl}/birthday`;
+    const url = `${this.apiUrl}/birthdays`;
     return this.http.post<Birthday>(url, birthday, httpOptions);
   }
 }
