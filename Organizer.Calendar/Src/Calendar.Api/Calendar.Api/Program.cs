@@ -1,3 +1,4 @@
+using Calendar.Application.Behavior;
 using Calendar.Application.Birthdays.Commands.CreateBirthday;
 using Calendar.Application.Birthdays.Commands.DeleteBirthday;
 using Calendar.Application.Birthdays.Models;
@@ -15,6 +16,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMediatR(typeof(CreateBirthdayCommand).Assembly);
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
+
 builder.Services.AddCors(); // TODO set CORS
 
 var cs = builder.Environment.IsDevelopment()
