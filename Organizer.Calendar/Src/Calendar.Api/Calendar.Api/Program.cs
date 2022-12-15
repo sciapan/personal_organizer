@@ -82,7 +82,7 @@ try
         .WithName("CreateBirthday")
         .WithTags("birthdays");
 
-    app.MapDelete("/birthday/{id}", async (int id, IMediator mediator, CancellationToken cancellationToken) =>
+    app.MapDelete("/birthdays/{id}", async (int id, IMediator mediator, CancellationToken cancellationToken) =>
         {
             var result = await mediator.Send(new DeleteBirthdayCommand { Id = id }, cancellationToken);
             return result == null ? Results.NotFound() : Results.Ok(result);
