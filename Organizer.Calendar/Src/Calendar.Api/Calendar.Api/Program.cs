@@ -1,4 +1,4 @@
-using Calendar.Application.Behavior;
+using Calendar.Application.Behaviors;
 using Calendar.Application.Birthdays.Commands.CreateBirthday;
 using Calendar.Application.Birthdays.Commands.DeleteBirthday;
 using Calendar.Application.Birthdays.Models;

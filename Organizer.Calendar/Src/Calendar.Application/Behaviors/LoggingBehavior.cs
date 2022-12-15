@@ -1,7 +1,7 @@
 using MediatR;
 using System.Diagnostics;
 
-namespace Calendar.Application.Behavior
+namespace Calendar.Application.Behaviors
 {
     public class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
     {
