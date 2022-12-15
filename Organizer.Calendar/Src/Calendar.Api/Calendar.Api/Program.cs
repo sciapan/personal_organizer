@@ -8,77 +8,97 @@ using Calendar.Application.Interfaces;
 using Calendar.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
-var builder = WebApplication.CreateBuilder(args);
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .CreateLogger();
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddMediatR(typeof(CreateBirthdayCommand).Assembly);
-builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
-
-builder.Services.AddCors(); // TODO set CORS
-
-var cs = builder.Environment.IsDevelopment()
-    ? builder.Configuration["ConnectionStrings:CalendarDb"]
-    : builder.Configuration["ConnectionStrings:CalendarDbDocker"];
-
-builder.Services.AddDbContext<ICalendarDbContext, CalendarDbContext>(optionsBuilder =>
-    optionsBuilder.UseNpgsql(cs,
-        contextOptionsBuilder => contextOptionsBuilder.MigrationsAssembly("Calendar.Migrations")));
-
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
+// try / catch to ensure correct logging of all configuration issues
+try
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-    app.UseCors(policyBuilder => policyBuilder.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod()); // TODO set CORS
-}
+    var builder = WebApplication.CreateBuilder(args);
 
-// TODO
-//app.UseHttpsRedirection();
+    // Add services to the container.
+    // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen();
+    builder.Services.AddMediatR(typeof(CreateBirthdayCommand).Assembly);
+    builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
 
-// birthdays
-app.MapGet("/birthdays", async (IMediator mediator, CancellationToken cancellationToken) =>
+    builder.Services.AddCors(); // TODO set CORS
+
+    var cs = builder.Environment.IsDevelopment()
+        ? builder.Configuration["ConnectionStrings:CalendarDb"]
+        : builder.Configuration["ConnectionStrings:CalendarDbDocker"];
+
+    builder.Services.AddDbContext<ICalendarDbContext, CalendarDbContext>(optionsBuilder =>
+        optionsBuilder.UseNpgsql(cs,
+            contextOptionsBuilder => contextOptionsBuilder.MigrationsAssembly("Calendar.Migrations")));
+
+    // logging
+    builder.Host.UseSerilog();
+
+    var app = builder.Build();
+
+    // Configure the HTTP request pipeline.
+    //if (app.Environment.IsDevelopment())
     {
-        var result = await mediator.Send(new GetBirthdaysQuery(), cancellationToken);
-        return Results.Ok(result);
-    })
-    .Produces<BirthdayVm[]>()
-    .WithName("GetBirthdays")
-    .WithTags("birthdays");
+        app.UseSwagger();
+        app.UseSwaggerUI();
+        app.UseCors(policyBuilder => policyBuilder.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod()); // TODO set CORS
+    }
 
-app.MapGet("/birthdays/{id}", async (int id, IMediator mediator, CancellationToken cancellationToken) =>
-    {
-        var result = await mediator.Send(new GetBirthdayQuery { Id = id }, cancellationToken);
-        return result == null ? Results.NotFound() : Results.Ok(result);
-    })
-    .Produces<BirthdayVm>()
-    .Produces(StatusCodes.Status404NotFound)
-    .WithName("GetBirthday")
-    .WithTags("birthdays");
+    // TODO
+    //app.UseHttpsRedirection();
 
-app.MapPost("/birthdays",
-        async (CreateBirthdayCommand command, IMediator mediator, CancellationToken cancellationToken) =>
+    // birthdays
+    app.MapGet("/birthdays", async (IMediator mediator, CancellationToken cancellationToken) =>
         {
-            var result = await mediator.Send(command, cancellationToken);
-            return Results.Created($"/birthdays/{result.Id}", result);
+            var result = await mediator.Send(new GetBirthdaysQuery(), cancellationToken);
+            return Results.Ok(result);
         })
-    .Produces<BirthdayVm>(StatusCodes.Status201Created)
-    .WithName("CreateBirthday")
-    .WithTags("birthdays");
+        .Produces<BirthdayVm[]>()
+        .WithName("GetBirthdays")
+        .WithTags("birthdays");
 
-app.MapDelete("/birthday/{id}", async (int id, IMediator mediator, CancellationToken cancellationToken) =>
-    {
-        var result = await mediator.Send(new DeleteBirthdayCommand { Id = id }, cancellationToken);
-        return result == null ? Results.NotFound() : Results.Ok(result);
-    })
-    .Produces<BirthdayVm>()
-    .Produces(StatusCodes.Status404NotFound)
-    .WithName("DeleteBirthday")
-    .WithTags("birthdays");
+    app.MapGet("/birthdays/{id}", async (int id, IMediator mediator, CancellationToken cancellationToken) =>
+        {
+            var result = await mediator.Send(new GetBirthdayQuery { Id = id }, cancellationToken);
+            return result == null ? Results.NotFound() : Results.Ok(result);
+        })
+        .Produces<BirthdayVm>()
+        .Produces(StatusCodes.Status404NotFound)
+        .WithName("GetBirthday")
+        .WithTags("birthdays");
 
-app.Run();
+    app.MapPost("/birthdays",
+            async (CreateBirthdayCommand command, IMediator mediator, CancellationToken cancellationToken) =>
+            {
+                var result = await mediator.Send(command, cancellationToken);
+                return Results.Created($"/birthdays/{result.Id}", result);
+            })
+        .Produces<BirthdayVm>(StatusCodes.Status201Created)
+        .WithName("CreateBirthday")
+        .WithTags("birthdays");
+
+    app.MapDelete("/birthday/{id}", async (int id, IMediator mediator, CancellationToken cancellationToken) =>
+        {
+            var result = await mediator.Send(new DeleteBirthdayCommand { Id = id }, cancellationToken);
+            return result == null ? Results.NotFound() : Results.Ok(result);
+        })
+        .Produces<BirthdayVm>()
+        .Produces(StatusCodes.Status404NotFound)
+        .WithName("DeleteBirthday")
+        .WithTags("birthdays");
+
+    app.Run();
+}
+catch (Exception e)
+{
+    Log.Fatal(e, "Application terminated unexpectedly");
+}
+finally
+{
+    Log.CloseAndFlush();
+}
