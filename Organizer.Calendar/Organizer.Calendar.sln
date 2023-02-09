@@ -11,9 +11,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Src", "Src", "{FAE0DD15-B9E
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Calendar.Application", "Src\Calendar.Application\Calendar.Application.csproj", "{9FC63397-ED41-4A15-BBE6-AA4C2932D37B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Calendar.Api", "Src\Calendar.Api\Calendar.Api\Calendar.Api.csproj", "{EB810709-21C1-4786-A5EA-6FA73FC12528}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Calendar.Api", "Src\Calendar.Api\Calendar.Api.csproj", "{EB810709-21C1-4786-A5EA-6FA73FC12528}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calendar.Migrations", "Src\Calendar.Migrations\Calendar.Migrations.csproj", "{3BACB834-15A7-4B0B-B901-C0F5793886FD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{C07000A4-B6EA-45B5-9FB2-DE245381056B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calendar.Api.Tests.Integration", "Tests\Calendar.Api.Tests.Integration\Calendar.Api.Tests.Integration.csproj", "{45D5CE82-B9DD-4F51-8320-A5AE3D4BCFF3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +45,10 @@ Global
 		{3BACB834-15A7-4B0B-B901-C0F5793886FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3BACB834-15A7-4B0B-B901-C0F5793886FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3BACB834-15A7-4B0B-B901-C0F5793886FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45D5CE82-B9DD-4F51-8320-A5AE3D4BCFF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45D5CE82-B9DD-4F51-8320-A5AE3D4BCFF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45D5CE82-B9DD-4F51-8320-A5AE3D4BCFF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45D5CE82-B9DD-4F51-8320-A5AE3D4BCFF3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -51,6 +59,7 @@ Global
 		{9FC63397-ED41-4A15-BBE6-AA4C2932D37B} = {FAE0DD15-B9EE-4148-86DF-624F0A8EC241}
 		{EB810709-21C1-4786-A5EA-6FA73FC12528} = {FAE0DD15-B9EE-4148-86DF-624F0A8EC241}
 		{3BACB834-15A7-4B0B-B901-C0F5793886FD} = {FAE0DD15-B9EE-4148-86DF-624F0A8EC241}
+		{45D5CE82-B9DD-4F51-8320-A5AE3D4BCFF3} = {C07000A4-B6EA-45B5-9FB2-DE245381056B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {63B3374B-1D02-4D8E-92E1-0E1A37341700}

@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>a0b0ca59-d04d-4273-b26f-f08a4813651d</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <DockerfileContext>..\..\..</DockerfileContext>
+    <DockerfileContext>..\..</DockerfileContext>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,9 +21,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Calendar.Application\Calendar.Application.csproj" />
-    <ProjectReference Include="..\..\Calendar.Migrations\Calendar.Migrations.csproj" />
-    <ProjectReference Include="..\..\Calendar.Persistence\Calendar.Persistence.csproj" />
+    <ProjectReference Include="..\Calendar.Application\Calendar.Application.csproj" />
+    <ProjectReference Include="..\Calendar.Migrations\Calendar.Migrations.csproj" />
+    <ProjectReference Include="..\Calendar.Persistence\Calendar.Persistence.csproj" />
   </ItemGroup>
 
 </Project>
