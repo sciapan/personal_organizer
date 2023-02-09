@@ -15,12 +15,12 @@ namespace Calendar.Domain.Entities
         /// <summary>
         /// Date of birth.
         /// </summary>
-        public DateTimeOffset Dob { get; set; }
+        public required DateTimeOffset Dob { get; set; }
 
         /// <summary>
         /// Person name.
         /// </summary>
-        public string Person { get; set; }
+        public required string Person { get; set; }
 
         /// <summary>
         /// Additional notes.
