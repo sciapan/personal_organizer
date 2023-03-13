@@ -28,9 +28,7 @@ try
 
     builder.Services.AddCors(); // TODO set CORS
 
-    var cs = builder.Environment.IsDevelopment()
-        ? builder.Configuration["ConnectionStrings:CalendarDb"]
-        : builder.Configuration["ConnectionStrings:CalendarDbDocker"];
+    var cs = builder.Configuration["ConnectionStrings:CalendarDbDocker"]!;
 
     builder.Services.AddDbContext<ICalendarDbContext, CalendarDbContext>(optionsBuilder =>
         optionsBuilder.UseNpgsql(cs,
@@ -94,8 +92,18 @@ try
 
     app.Run();
 }
+catch (HostAbortedException) // rethrow for tools (dotnet-ef e.g.)
+{
+    throw;
+}
 catch (Exception e)
 {
+    string type = e.GetType().Name;
+    if (type.Equals("StopTheHostException", StringComparison.Ordinal))
+    {
+        throw; // rethrow for tools (dotnet-ef e.g.)
+    }
+
     Log.Fatal(e, "Application terminated unexpectedly");
 }
 finally
