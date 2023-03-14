@@ -1,3 +1,6 @@
+using System.Net.Http.Json;
+using Calendar.Application.Birthdays.Commands.CreateBirthday;
+
 namespace Calendar.Api.Tests.Integration;
 
 public class BirthdaysTests : IClassFixture<CalendarApiFactory>
@@ -10,7 +13,27 @@ public class BirthdaysTests : IClassFixture<CalendarApiFactory>
     }
 
     [Fact]
-    public async Task Get_ReturnsSuccess()
+    public async Task Post_ShouldCreateBirthday()
+    {
+        // Arrange
+        var client = _factory.CreateClient();
+
+        var createBirthdayCommand = new CreateBirthdayCommand
+        {
+            Person = "test",
+            Dob = DateTimeOffset.UtcNow.AddDays(-1),
+            Notes = "notes"
+        };
+
+        // Act
+        var response = await client.PostAsJsonAsync("/birthdays", createBirthdayCommand);
+
+        // Assert
+        response.EnsureSuccessStatusCode();
+    }
+
+    [Fact]
+    public async Task Get_ShouldReturnZeroBirthdays()
     {
         // Arrange
         var client = _factory.CreateClient();
