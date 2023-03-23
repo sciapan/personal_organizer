@@ -1,4 +1,7 @@
-﻿using Calendar.Application.Interfaces;
+﻿using Calendar.Application.Contracts;
+using Calendar.Application.Interfaces;
+using Mapster;
+using MassTransit;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using OneOf;
@@ -12,6 +15,8 @@ namespace Calendar.Application.Birthdays.Commands.DeleteBirthday
 
         private readonly ICalendarDbContext _dbContext;
 
+        private readonly IBus _bus;
+
         #endregion
 
         #region Ctor
@@ -20,9 +25,11 @@ namespace Calendar.Application.Birthdays.Commands.DeleteBirthday
         /// Initializes a new instance of the DeleteBirthdayCommandHandler class.
         /// </summary>
         /// <param name="dbContext"><see cref="ICalendarDbContext"/></param>
-        public DeleteBirthdayCommandHandler(ICalendarDbContext dbContext)
+        /// <param name="bus"><see cref="IBus"/></param>
+        public DeleteBirthdayCommandHandler(ICalendarDbContext dbContext, IBus bus)
         {
             _dbContext = dbContext;
+            _bus = bus;
         }
 
         #endregion
@@ -40,6 +47,8 @@ namespace Calendar.Application.Birthdays.Commands.DeleteBirthday
             _dbContext.Birthdays.Remove(birthday);
 
             await _dbContext.SaveChangesAsync(cancellationToken);
+
+            await _bus.Publish(birthday.Adapt<BirthdayDeleted>());
 
             return Unit.Value;
         }

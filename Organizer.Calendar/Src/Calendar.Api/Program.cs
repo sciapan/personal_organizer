@@ -10,6 +10,7 @@ using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using MassTransit;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -29,12 +30,31 @@ try
     builder.Services.AddMediatR(typeof(CreateBirthdayCommand).Assembly);
     builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
 
-    // add fluent validation
+    // add fluentValidation
     builder.Services.AddValidatorsFromAssemblyContaining<CreateBirthdayCommandValidator>();
+
+    // add massTransit
+    builder.Services.AddMassTransit(x =>
+    {
+        x.UsingRabbitMq((context, cfg) =>
+        {
+            var host = builder.Configuration["Broker:Host"];
+            var virtualHost = builder.Configuration["Broker:VirtualHost"];
+            var username = builder.Configuration["Broker:Username"];
+            var password = builder.Configuration["Broker:Password"];
+
+            cfg.Host(host, virtualHost, h =>
+            {
+                h.Username(username);
+                h.Password(password);
+            });
+            cfg.ConfigureEndpoints(context);
+        });
+    });
 
     // add time machine to easy retrive & moq time
     builder.Services.AddSingleton<IMachineTime, MachineTime>();
-    
+
     builder.Services.AddCors(); // TODO set CORS
 
     var cs = builder.Configuration["ConnectionStrings:CalendarDbDocker"]!;

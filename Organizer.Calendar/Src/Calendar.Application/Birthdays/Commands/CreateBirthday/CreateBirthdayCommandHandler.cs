@@ -1,8 +1,10 @@
 ﻿using Calendar.Application.Behaviors;
 using Calendar.Application.Birthdays.Models;
+using Calendar.Application.Contracts;
 using Calendar.Application.Interfaces;
 using Calendar.Domain.Entities;
 using Mapster;
+using MassTransit;
 using MediatR;
 using OneOf;
 
@@ -16,6 +18,8 @@ namespace Calendar.Application.Birthdays.Commands.CreateBirthday
 
         private readonly CreateBirthdayCommandValidator _validator;
 
+        private readonly IBus _bus;
+
         #endregion
 
         #region Ctor
@@ -25,10 +29,12 @@ namespace Calendar.Application.Birthdays.Commands.CreateBirthday
         /// </summary>
         /// <param name="dbContext"><see cref="ICalendarDbContext"/></param>
         /// <param name="validator"><see cref="CreateBirthdayCommandValidator"/></param>
-        public CreateBirthdayCommandHandler(ICalendarDbContext dbContext, CreateBirthdayCommandValidator validator)
+        /// <param name="bus"><see cref="IBus"/></param>
+        public CreateBirthdayCommandHandler(ICalendarDbContext dbContext, CreateBirthdayCommandValidator validator, IBus bus)
         {
             _dbContext = dbContext;
             _validator = validator;
+            _bus = bus;
         }
 
         #endregion
@@ -50,6 +56,8 @@ namespace Calendar.Application.Birthdays.Commands.CreateBirthday
             _dbContext.Birthdays.Add(birthday);
 
             await _dbContext.SaveChangesAsync(cancellationToken);
+
+            await _bus.Publish(birthday.Adapt<BirthdayCreated>());
 
             return birthday.Adapt<BirthdayVm>();
         }
