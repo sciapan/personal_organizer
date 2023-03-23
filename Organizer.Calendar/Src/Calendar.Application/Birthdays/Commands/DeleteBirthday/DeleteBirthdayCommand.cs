@@ -1,9 +1,10 @@
-﻿using Calendar.Application.Birthdays.Models;
-using MediatR;
+﻿using MediatR;
+using OneOf;
+using OneOf.Types;
 
 namespace Calendar.Application.Birthdays.Commands.DeleteBirthday
 {
-    public class DeleteBirthdayCommand : IRequest<BirthdayVm?>
+    public class DeleteBirthdayCommand : IRequest<OneOf<Unit, NotFound>>
     {
         /// <summary>
         /// Birthday Id.

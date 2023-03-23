@@ -1,12 +1,12 @@
-﻿using Calendar.Application.Birthdays.Models;
-using Calendar.Application.Interfaces;
-using Mapster;
+﻿using Calendar.Application.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using OneOf;
+using OneOf.Types;
 
 namespace Calendar.Application.Birthdays.Commands.DeleteBirthday
 {
-    public class DeleteBirthdayCommandHandler : IRequestHandler<DeleteBirthdayCommand, BirthdayVm?>
+    public class DeleteBirthdayCommandHandler : IRequestHandler<DeleteBirthdayCommand, OneOf<Unit, NotFound>>
     {
         #region Fields
 
@@ -29,20 +29,19 @@ namespace Calendar.Application.Birthdays.Commands.DeleteBirthday
 
         #region Methods
 
-        public async Task<BirthdayVm?> Handle(DeleteBirthdayCommand request, CancellationToken cancellationToken)
+        public async Task<OneOf<Unit, NotFound>> Handle(DeleteBirthdayCommand request, CancellationToken cancellationToken)
         {
             var birthday = await _dbContext.Birthdays.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
             if (birthday == null)
             {
-                return null;
+                return new NotFound();
             }
 
             _dbContext.Birthdays.Remove(birthday);
 
             await _dbContext.SaveChangesAsync(cancellationToken);
 
-            return birthday.Adapt<BirthdayVm>();
-
+            return Unit.Value;
         }
 
         #endregion

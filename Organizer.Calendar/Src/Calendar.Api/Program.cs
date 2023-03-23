@@ -63,7 +63,7 @@ try
     app.MapGet("/birthdays/{id}", async (int id, IMediator mediator, CancellationToken cancellationToken) =>
         {
             var result = await mediator.Send(new GetBirthdayQuery { Id = id }, cancellationToken);
-            return result == null ? Results.NotFound() : Results.Ok(result);
+            return result.Match(result => Results.Ok(result), notFound => Results.NotFound());
         })
         .Produces<BirthdayVm>()
         .Produces(StatusCodes.Status404NotFound)
@@ -83,7 +83,7 @@ try
     app.MapDelete("/birthdays/{id}", async (int id, IMediator mediator, CancellationToken cancellationToken) =>
         {
             var result = await mediator.Send(new DeleteBirthdayCommand { Id = id }, cancellationToken);
-            return result == null ? Results.NotFound() : Results.Ok(result);
+            result.Match(result => Results.Ok(), notFound => Results.NotFound());
         })
         .Produces<BirthdayVm>()
         .Produces(StatusCodes.Status404NotFound)
