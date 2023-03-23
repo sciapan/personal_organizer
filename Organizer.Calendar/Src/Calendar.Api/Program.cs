@@ -6,6 +6,7 @@ using Calendar.Application.Birthdays.Queries.GetBirthday;
 using Calendar.Application.Birthdays.Queries.GetBirthdays;
 using Calendar.Application.Interfaces;
 using Calendar.Persistence;
+using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -23,9 +24,14 @@ try
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
+
+    // add mediatR
     builder.Services.AddMediatR(typeof(CreateBirthdayCommand).Assembly);
     builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
 
+    // add fluent validation
+    builder.Services.AddValidatorsFromAssemblyContaining<CreateBirthdayCommandValidator>();
+    
     builder.Services.AddCors(); // TODO set CORS
 
     var cs = builder.Configuration["ConnectionStrings:CalendarDbDocker"]!;
@@ -74,7 +80,7 @@ try
             async (CreateBirthdayCommand command, IMediator mediator, CancellationToken cancellationToken) =>
             {
                 var result = await mediator.Send(command, cancellationToken);
-                return Results.Created($"/birthdays/{result.Id}", result);
+                return result.Match(result => Results.Created($"/birthdays/{result.Id}", result), vaildationFailed => Results.BadRequest(vaildationFailed.Errors));
             })
         .Produces<BirthdayVm>(StatusCodes.Status201Created)
         .WithName("CreateBirthday")

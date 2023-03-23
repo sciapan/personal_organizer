@@ -18,5 +18,5 @@ public class CalendarDbContext : DbContext, ICalendarDbContext
     /// <summary>
     /// 
     /// </summary>
-    public DbSet<Birthday> Birthdays { get; set; }
+    public required DbSet<Birthday> Birthdays { get; set; }
 }

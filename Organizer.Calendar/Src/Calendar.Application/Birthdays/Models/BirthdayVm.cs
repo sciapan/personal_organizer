@@ -15,7 +15,7 @@
         /// <summary>
         /// Person name.
         /// </summary>
-        public string Person { get; set; }
+        public required string Person { get; set; }
 
         /// <summary>
         /// Additional notes.
