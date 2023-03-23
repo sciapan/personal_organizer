@@ -31,6 +31,9 @@ try
 
     // add fluent validation
     builder.Services.AddValidatorsFromAssemblyContaining<CreateBirthdayCommandValidator>();
+
+    // add time machine to easy retrive & moq time
+    builder.Services.AddSingleton<IMachineTime, MachineTime>();
     
     builder.Services.AddCors(); // TODO set CORS
 
