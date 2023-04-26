@@ -57,7 +57,7 @@ try
 
     builder.Services.AddCors(); // TODO set CORS
 
-    var cs = builder.Configuration["ConnectionStrings:CalendarDbDocker"]!;
+    var cs = builder.Configuration["ConnectionStrings:CalendarDb"]!;
 
     builder.Services.AddDbContext<ICalendarDbContext, CalendarDbContext>(optionsBuilder =>
         optionsBuilder.UseNpgsql(cs,

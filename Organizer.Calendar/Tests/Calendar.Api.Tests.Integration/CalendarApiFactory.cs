@@ -31,13 +31,11 @@ public class CalendarApiFactory : WebApplicationFactory<IApiMarker>, IAsyncLifet
 
             var sp = services.BuildServiceProvider();
 
-            using (var scope = sp.CreateScope())
-            {
-                var scopedServices = scope.ServiceProvider;
-                var db = scopedServices.GetRequiredService<CalendarDbContext>();
+            using var scope = sp.CreateScope();
+            var scopedServices = scope.ServiceProvider;
+            var db = scopedServices.GetRequiredService<CalendarDbContext>();
 
-                db.Database.EnsureCreated();
-            }
+            db.Database.EnsureCreated();
         });
     }
 

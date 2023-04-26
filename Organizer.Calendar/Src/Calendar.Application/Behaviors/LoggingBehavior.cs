@@ -6,13 +6,13 @@ namespace Calendar.Application.Behaviors
 {
     public class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
     {
-        #region 
+        #region Fields
 
         private readonly ILogger _logger;
 
         #endregion
 
-        #region 
+        #region Ctor
 
         public LoggingBehavior(ILogger<LoggingBehavior<TRequest, TResponse>> logger)
         {
@@ -20,6 +20,8 @@ namespace Calendar.Application.Behaviors
         }
 
         #endregion
+
+        #region Methods
 
         public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
         {
@@ -42,5 +44,7 @@ namespace Calendar.Application.Behaviors
 
             return response;
         }
+
+        #endregion
     }
 }
