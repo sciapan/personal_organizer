@@ -13,12 +13,14 @@ services:
       - "8080:15672"
       - "5672:5672"
   organizer-calendar:
-    image: organizer.calendar:1.1
+    image: organizer.calendar:1.0
+    build: ./organizer.calendar
     ports:
       - "15000:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
   organizer-web:
     image: organizer.web:1.0
+    build: ./organizer.web.client
     ports:
       - "4200:4200"
